@@ -94,49 +94,106 @@ public class App {
 
 	protected static void assembleBooks() {
 		for (BookBean book : books) {
-			File bookPath = getBookPath(book);
-			logger.info("assemble book " + book.getTitle());
-			File f = new File(bookPath, "book.txt");
-			try {
-				OutputStream os = new FileOutputStream(f);
-				try {
-					Writer out = new OutputStreamWriter(os, "UTF-8");
-					out.write(book.getTitle());
-					out.write("\r\n");
-					out.write("\r\n");
-					out.write("作者：");
-					out.write(book.getAuthor());
-					out.write("\r\n");
-					out.write("简介：");
-					out.write(book.getDescription());
-					out.write("\r\n");
-					out.write("\r\n");
+			assembleBook(book);
+		}
+	}
 
-					for (Catalog item : book.getCatalog()) {
-						String title = item.getText();
-						out.write(title);
-						out.write("\r\n");
-						out.flush();
-						File chapterFile = getChapterPath(book, item.getHref());
-						if (chapterFile != null && chapterFile.exists() && chapterFile.isFile()) {
-							InputStream is = new FileInputStream(chapterFile);
-							IOUtils.copy(is, os);
-							os.flush();
-							IOUtils.closeQuietly(is);
-						}
-						out.write("\r\n");
-						out.write("\r\n");
+	public static void assembleBook(BookBean book) {
+		File bookPath = getBookPath(book);
+		logger.info("assemble book " + book.getTitle());
+		File f = new File(bookPath, "book.txt");
+		try {
+			OutputStream os = new FileOutputStream(f);
+			try {
+				Writer out = new OutputStreamWriter(os, "UTF-8");
+				out.write(book.getTitle());
+				out.write("\r\n");
+				out.write("\r\n");
+				out.write("作者：");
+				out.write(book.getAuthor());
+				out.write("\r\n");
+				out.write("简介：");
+				out.write(book.getDescription());
+				out.write("\r\n");
+				out.write("\r\n");
+
+				for (Catalog item : book.getCatalog()) {
+					String title = item.getText();
+					out.write(title);
+					out.write("\r\n");
+					out.flush();
+					File chapterFile = getChapterPath(book, item.getHref());
+					if (chapterFile != null && chapterFile.exists() && chapterFile.isFile()) {
+						InputStream is = new FileInputStream(chapterFile);
+						IOUtils.copy(is, os);
+						os.flush();
+						IOUtils.closeQuietly(is);
 					}
-					IOUtils.closeQuietly(os);
-					os = null;
-					FileUtils.copyFile(f, new File(bookPath, book.getTitle() + ".txt"));
-				} finally {
-					IOUtils.closeQuietly(os);
+					out.write("\r\n");
+					out.write("\r\n");
 				}
-				logger.info("assemble book finished");
-			} catch (IOException e) {
-				e.printStackTrace();
+				IOUtils.closeQuietly(os);
+				os = null;
+				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + ".txt"));
+			} finally {
+				IOUtils.closeQuietly(os);
 			}
+			logger.info("assemble book finished");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void assembleBookPart(BookBean book, String suffix, String beginHref) {
+		File bookPath = getBookPath(book);
+		logger.info("assemble book part " + book.getTitle() +" suffix: " + suffix + " beginHref: "+ beginHref);
+		File f = new File(bookPath, "book.txt");
+		boolean found = false;
+		try {
+			OutputStream os = new FileOutputStream(f);
+			try {
+				Writer out = new OutputStreamWriter(os, "UTF-8");
+				out.write(book.getTitle());
+				out.write("\r\n");
+				out.write("\r\n");
+				out.write("作者：");
+				out.write(book.getAuthor());
+				out.write("\r\n");
+				out.write("简介：");
+				out.write(book.getDescription());
+				out.write("\r\n");
+				out.write("\r\n");
+
+				for (Catalog item : book.getCatalog()) {
+					if(!found){
+						if(StringUtils.equals(item.getHref(), beginHref))
+							found = true;
+						else
+							continue;
+					}
+					String title = item.getText();
+					out.write(title);
+					out.write("\r\n");
+					out.flush();
+					File chapterFile = getChapterPath(book, item.getHref());
+					if (chapterFile != null && chapterFile.exists() && chapterFile.isFile()) {
+						InputStream is = new FileInputStream(chapterFile);
+						IOUtils.copy(is, os);
+						os.flush();
+						IOUtils.closeQuietly(is);
+					}
+					out.write("\r\n");
+					out.write("\r\n");
+				}
+				IOUtils.closeQuietly(os);
+				os = null;
+				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + suffix +".txt"));
+			} finally {
+				IOUtils.closeQuietly(os);
+			}
+			logger.info("assemble book part finished");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
