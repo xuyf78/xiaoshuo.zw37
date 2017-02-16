@@ -72,7 +72,7 @@ public class App {
 			engine.setEventListener(new EventListener() {
 
 				public void onStop(GeccoEngine ge) {
-					assembleBooks();
+					//assembleBooks();
 				}
 
 				public void onStart(GeccoEngine ge) {
@@ -117,7 +117,10 @@ public class App {
 				out.write("\r\n");
 				out.write("\r\n");
 
+				String lastHref = null;
 				for (Catalog item : book.getCatalog()) {
+					if(StringUtils.isNotBlank(item.getHref()))
+						lastHref = item.getHref();
 					String title = item.getText();
 					out.write(title);
 					out.write("\r\n");
@@ -135,6 +138,7 @@ public class App {
 				IOUtils.closeQuietly(os);
 				os = null;
 				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + ".txt"));
+				saveLastHref(book, lastHref);
 			} finally {
 				IOUtils.closeQuietly(os);
 			}
@@ -144,6 +148,13 @@ public class App {
 		}
 	}
 	
+	private static void saveLastHref(BookBean book, String lastHref) throws IOException {
+		if(StringUtils.isNotBlank(lastHref)){
+			File bookPath = getBookPath(book);
+			FileUtils.write(new File(bookPath, "lastHref.txt"), lastHref);
+		}
+	}
+
 	public static void assembleBookPart(BookBean book, String suffix, String beginHref) {
 		File bookPath = getBookPath(book);
 		logger.info("assemble book part " + book.getTitle() +" suffix: " + suffix + " beginHref: "+ beginHref);
@@ -164,6 +175,7 @@ public class App {
 				out.write("\r\n");
 				out.write("\r\n");
 
+				String lastHref = null;
 				for (Catalog item : book.getCatalog()) {
 					if(!found){
 						if(StringUtils.equals(item.getHref(), beginHref))
@@ -171,6 +183,8 @@ public class App {
 						else
 							continue;
 					}
+					if(StringUtils.isNotBlank(item.getHref()))
+						lastHref = item.getHref();
 					String title = item.getText();
 					out.write(title);
 					out.write("\r\n");
@@ -188,6 +202,7 @@ public class App {
 				IOUtils.closeQuietly(os);
 				os = null;
 				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + suffix +".txt"));
+				saveLastHref(book, lastHref);
 			} finally {
 				IOUtils.closeQuietly(os);
 			}
