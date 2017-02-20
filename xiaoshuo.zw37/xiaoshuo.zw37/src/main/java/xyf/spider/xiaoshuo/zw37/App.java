@@ -62,7 +62,6 @@ public class App {
 					.interval(1000)
 					// 使用pc端userAgent
 					.mobile(false);
-//			engine.getSpiderBeanFactory().getRenderFactory()
 			for (String item : books.split(",")) {
 				// 开始抓取的页面地址
 				HttpGetRequest request = new HttpGetRequest("http://www.37zw.com/" + item);
@@ -72,7 +71,7 @@ public class App {
 			engine.setEventListener(new EventListener() {
 
 				public void onStop(GeccoEngine ge) {
-					//assembleBooks();
+					// assembleBooks();
 				}
 
 				public void onStart(GeccoEngine ge) {
@@ -119,7 +118,7 @@ public class App {
 
 				String lastHref = null;
 				for (Catalog item : book.getCatalog()) {
-					if(StringUtils.isNotBlank(item.getHref()))
+					if (StringUtils.isNotBlank(item.getHref()))
 						lastHref = item.getHref();
 					String title = item.getText();
 					out.write(title);
@@ -147,9 +146,9 @@ public class App {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static void saveLastHref(BookBean book, String lastHref) throws IOException {
-		if(StringUtils.isNotBlank(lastHref)){
+		if (StringUtils.isNotBlank(lastHref)) {
 			File bookPath = getBookPath(book);
 			FileUtils.write(new File(bookPath, "lastHref.txt"), lastHref);
 		}
@@ -157,7 +156,7 @@ public class App {
 
 	public static void assembleBookPart(BookBean book, String suffix, String beginHref) {
 		File bookPath = getBookPath(book);
-		logger.info("assemble book part " + book.getTitle() +" suffix: " + suffix + " beginHref: "+ beginHref);
+		logger.info("assemble book part " + book.getTitle() + " suffix: " + suffix + " beginHref: " + beginHref);
 		File f = new File(bookPath, "book.txt");
 		boolean found = false;
 		try {
@@ -177,13 +176,13 @@ public class App {
 
 				String lastHref = null;
 				for (Catalog item : book.getCatalog()) {
-					if(!found){
-						if(StringUtils.equals(item.getHref(), beginHref))
+					if (!found) {
+						if (StringUtils.equals(item.getHref(), beginHref))
 							found = true;
 						else
 							continue;
 					}
-					if(StringUtils.isNotBlank(item.getHref()))
+					if (StringUtils.isNotBlank(item.getHref()))
 						lastHref = item.getHref();
 					String title = item.getText();
 					out.write(title);
@@ -201,7 +200,7 @@ public class App {
 				}
 				IOUtils.closeQuietly(os);
 				os = null;
-				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + suffix +".txt"));
+				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + suffix + ".txt"));
 				saveLastHref(book, lastHref);
 			} finally {
 				IOUtils.closeQuietly(os);
@@ -212,8 +211,8 @@ public class App {
 		}
 	}
 
-	private static File getBookPath(BookBean bean) {
-		File ret = new File(new File(rootPathFile, bean.getGroup()), bean.getBook());
+	private static File getBookPath(BookBean book) {
+		File ret = new File(new File(rootPathFile, book.getGroup()), book.getBook());
 		ret.mkdirs();
 		return ret;
 	}
@@ -229,35 +228,52 @@ public class App {
 		return ret;
 	}
 
-	public static void saveBook(BookBean bean) {
-		books.add(bean);
-		File path = getBookPath(bean);
+	public static void saveBook(BookBean book) {
+		books.add(book);
+		File path = getBookPath(book);
 		File jsonFile = new File(path, "book.json");
 		try {
-			FileUtils.write(jsonFile, JSON.toJSONString(bean));
+			FileUtils.write(jsonFile, JSON.toJSONString(book));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static BookBean findBook(ChapterBean chapter) {
+		final String group = chapter.getGroup();
+		final String book = chapter.getBook();
+		return findBook(group, book);
+	}
+
+	public static BookBean findBook(final String group, final String bookId) {
 		for (BookBean book : books) {
-			if (StringUtils.equals(book.getGroup(), chapter.getGroup())
-					&& StringUtils.equals(book.getBook(), chapter.getBook()))
+			if (StringUtils.equals(book.getGroup(), group) && StringUtils.equals(book.getBook(), bookId))
 				return book;
 		}
 		return null;
 	}
 
-	public static void saveChapter(ChapterBean bean) {
+	public static void saveChapter(ChapterBean chapter) {
 		try {
-			final BookBean book = findBook(bean);
-			logger.info("save chapter: " + bean.getChapter());
-			File chapterFile = getChapterPath(book, bean.getChapter() + ".html");
-			FileUtils.write(chapterFile, bean.getContent());
+			final BookBean book = findBook(chapter);
+			String chapterTitle = null;
+			Catalog catalog = findChapterCatalog(book, chapter);
+			if (catalog != null)
+				chapterTitle = catalog.getText();
+			logger.info("save chapter: " + chapter.getChapter() + " " + chapterTitle);
+			File chapterFile = getChapterPath(book, chapter.getChapter() + ".html");
+			FileUtils.write(chapterFile, chapter.getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Catalog findChapterCatalog(BookBean book, ChapterBean chapter) {
+		for (Catalog item : book.getCatalog()) {
+			if (StringUtils.equals(item.getHref(), chapter.getChapter() + ".html"))
+				return item;
+		}
+		return null;
 	}
 
 	public static boolean isNeedDownload(BookBean book, String href) {

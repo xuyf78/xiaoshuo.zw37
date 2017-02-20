@@ -4,7 +4,6 @@ import com.geccocrawler.gecco.annotation.FieldRenderName;
 import com.geccocrawler.gecco.annotation.Gecco;
 import com.geccocrawler.gecco.annotation.HtmlField;
 import com.geccocrawler.gecco.annotation.RequestParameter;
-import com.geccocrawler.gecco.annotation.Text;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
 @Gecco(matchUrl="http://www.37zw.com/{group}/{book}/{chapter}.html", pipelines={"chapterPipeline"})

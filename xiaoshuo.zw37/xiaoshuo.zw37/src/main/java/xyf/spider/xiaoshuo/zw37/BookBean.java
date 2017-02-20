@@ -1,7 +1,6 @@
 package xyf.spider.xiaoshuo.zw37;
 
 import java.util.List;
-import java.util.Map;
 
 import com.geccocrawler.gecco.annotation.Attr;
 import com.geccocrawler.gecco.annotation.Gecco;
@@ -12,7 +11,7 @@ import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
 @Gecco(matchUrl = { "http://www.37zw.com/{group}/{book}", "http://www.37zw.com/{group}/{book}/" }, pipelines = {
-		"consolePipeline", "bookPipeline" })
+		"bookPipeline" })
 public class BookBean implements HtmlBean {
 	private static final long serialVersionUID = 1L;
 

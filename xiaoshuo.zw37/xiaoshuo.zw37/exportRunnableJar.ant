@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project xiaoshuo.zw37">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="D:/workspace-sts-3.8.0.RELEASE"/>
+    <property name="dir.jarfile" value="${dir.buildfile}/target"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/xiaoshuo.zw37-0.0.1-SNAPSHOT-runnable.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="xyf.spider.xiaoshuo.zw37.App"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${dir.jarfile}/classes"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/com/geccocrawler/gecco/1.2.6/gecco-1.2.6.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/commons-codec/commons-codec/1.9/commons-codec-1.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/jsoup/jsoup/1.10.1/jsoup-1.10.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/reflections/reflections/0.9.10/reflections-0.9.10.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/javassist/javassist/3.19.0-GA/javassist-3.19.0-GA.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/com/google/code/findbugs/annotations/2.0.1/annotations-2.0.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/com/alibaba/fastjson/1.2.20/fastjson-1.2.20.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/cglib/cglib/3.2.4/cglib-3.2.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/ow2/asm/asm/5.1/asm-5.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/apache/ant/ant/1.9.6/ant-1.9.6.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/apache/ant/ant-launcher/1.9.6/ant-launcher-1.9.6.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/mozilla/rhino/1.7.7.1/rhino-1.7.7.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/org/weakref/jmxutils/1.19/jmxutils-1.19.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/com/google/guava/guava/20.0/guava-20.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/repo/commons-io/commons-io/2.4/commons-io-2.4.jar"/>
+        </jar>
+    </target>
+</project>
