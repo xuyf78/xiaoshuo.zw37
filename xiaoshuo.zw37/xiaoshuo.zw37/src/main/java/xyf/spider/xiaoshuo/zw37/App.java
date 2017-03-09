@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.geccocrawler.gecco.GeccoEngine;
 import com.geccocrawler.gecco.listener.EventListener;
 import com.geccocrawler.gecco.request.HttpGetRequest;
@@ -27,11 +28,14 @@ import com.geccocrawler.gecco.request.HttpGetRequest;
  *
  */
 public class App {
+	public static final String LAST_HREF_TXT = "lastHref.txt";
+	public static final String LAST_SUFFIX_TXT = "lastSuffix.txt";
+	public static final String BOOK_JSON = "book.json";
 	private static final Logger logger = Logger.getLogger(App.class);
-	private static final Properties properties = new Properties();
+	public static final Properties properties = new Properties();
 	static File rootPathFile;
 
-	private static void init() {
+	public static void init() {
 		try {
 			properties.load(App.class.getResourceAsStream("/config.properties"));
 			String rootPath = properties.getProperty("root_path", "./zw37_book");
@@ -51,8 +55,14 @@ public class App {
 	public static void main(String[] args) {
 		logger.info("begin");
 		init();
-		String books = properties.getProperty("books");
+		String books;
+		if(args.length > 0){
+			books = String.join(",", args);
+		}else{
+			books = properties.getProperty("books");
+		}
 		if (StringUtils.isNotBlank(books)) {
+			logger.info("下载："+books);
 			GeccoEngine engine = GeccoEngine.create()
 					// 工程的包路径
 					.classpath("xyf.spider.xiaoshuo.zw37")
@@ -150,7 +160,7 @@ public class App {
 	private static void saveLastHref(BookBean book, String lastHref) throws IOException {
 		if (StringUtils.isNotBlank(lastHref)) {
 			File bookPath = getBookPath(book);
-			FileUtils.write(new File(bookPath, "lastHref.txt"), lastHref);
+			FileUtils.write(new File(bookPath, LAST_HREF_TXT), lastHref);
 		}
 	}
 
@@ -202,6 +212,7 @@ public class App {
 				os = null;
 				FileUtils.copyFile(f, new File(bookPath, book.getTitle() + suffix + ".txt"));
 				saveLastHref(book, lastHref);
+				saveLastSuffix(book, suffix);
 			} finally {
 				IOUtils.closeQuietly(os);
 			}
@@ -211,13 +222,20 @@ public class App {
 		}
 	}
 
-	private static File getBookPath(BookBean book) {
+	private static void saveLastSuffix(BookBean book, String suffix) throws IOException {
+		if (StringUtils.isNotBlank(suffix)) {
+			File bookPath = getBookPath(book);
+			FileUtils.write(new File(bookPath, LAST_SUFFIX_TXT), suffix);
+		}
+	}
+
+	public static File getBookPath(BookBean book) {
 		File ret = new File(new File(rootPathFile, book.getGroup()), book.getBook());
 		ret.mkdirs();
 		return ret;
 	}
 
-	private static File getChapterPath(BookBean book, String href) {
+	public static File getChapterPath(BookBean book, String href) {
 		File bookPath = getBookPath(book);
 		final File parent = new File(bookPath, "content");
 		parent.mkdirs();
@@ -231,9 +249,9 @@ public class App {
 	public static void saveBook(BookBean book) {
 		books.add(book);
 		File path = getBookPath(book);
-		File jsonFile = new File(path, "book.json");
+		File jsonFile = new File(path, BOOK_JSON);
 		try {
-			FileUtils.write(jsonFile, JSON.toJSONString(book));
+			FileUtils.write(jsonFile, JSON.toJSONString(book,SerializerFeature.BrowserCompatible));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
