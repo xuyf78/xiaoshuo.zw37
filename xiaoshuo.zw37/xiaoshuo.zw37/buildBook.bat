@@ -1,0 +1,1 @@
+java -cp target\xiaoshuo.zw37-0.0.1-SNAPSHOT-runnable.jar xyf.spider.xiaoshuo.zw37.BuildBook %1 %2 %3 %4 %5 %6 %7 %8 %9

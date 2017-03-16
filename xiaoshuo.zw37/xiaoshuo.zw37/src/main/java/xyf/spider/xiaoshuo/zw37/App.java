@@ -73,10 +73,24 @@ public class App {
 					// 使用pc端userAgent
 					.mobile(false);
 			for (String item : books.split(",")) {
-				// 开始抓取的页面地址
-				HttpGetRequest request = new HttpGetRequest("http://www.37zw.com/" + item);
-				request.setCharset("GBK");
-				engine.start(request);
+				if("all".equals(item)){
+					for(File f : rootPathFile.listFiles()){
+						if(!f.isDirectory())
+							continue;
+						for(File f2 : f.listFiles()){
+							if(!f2.isDirectory())
+								continue;
+							HttpGetRequest request = new HttpGetRequest("http://www.37zw.com/" + f.getName()+"/"+f2.getName());
+							request.setCharset("GBK");
+							engine.start(request);
+						}
+					}
+				}else{
+					// 开始抓取的页面地址
+					HttpGetRequest request = new HttpGetRequest("http://www.37zw.com/" + item);
+					request.setCharset("GBK");
+					engine.start(request);
+				}
 			}
 			engine.setEventListener(new EventListener() {
 
