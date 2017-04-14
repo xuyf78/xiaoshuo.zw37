@@ -26,7 +26,7 @@ public class BuildBook {
 		if (a.isEmpty()) {
 			books = App.properties.getProperty("books");
 		} else {
-			books = String.join(",", a);
+			books = StringUtils.join(",", a);
 		}
 
 		for (String bookStr : books.split(",")) {

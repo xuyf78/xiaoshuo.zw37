@@ -57,7 +57,7 @@ public class App {
 		init();
 		String books;
 		if(args.length > 0){
-			books = String.join(",", args);
+			books = StringUtils.join(",", args);
 		}else{
 			books = properties.getProperty("books");
 		}

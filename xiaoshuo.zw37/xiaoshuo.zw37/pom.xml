@@ -31,5 +31,10 @@
 		<artifactId>commons-io</artifactId>
 		<version>2.4</version>
 	</dependency>
+	<dependency>
+		<groupId>nl.siegmann.epublib</groupId>
+		<artifactId>epublib-tools</artifactId>
+		<version>3.1</version>
+	</dependency>
   </dependencies>
 </project>
