@@ -10,7 +10,7 @@ import com.geccocrawler.gecco.annotation.RequestParameter;
 import com.geccocrawler.gecco.request.HttpRequest;
 import com.geccocrawler.gecco.spider.HtmlBean;
 
-@Gecco(matchUrl = { "http://www.37zw.com/{group}/{book}", "http://www.37zw.com/{group}/{book}/" }, pipelines = {
+@Gecco(matchUrl = { App.HTTP_WWW_37ZW_NET + "{group}/{book}", App.HTTP_WWW_37ZW_NET + "{group}/{book}/" }, pipelines = {
 		"bookPipeline" })
 public class BookBean implements HtmlBean {
 	private static final long serialVersionUID = 1L;
@@ -42,6 +42,10 @@ public class BookBean implements HtmlBean {
 	@HtmlField(cssPath = "#list > dl > dd")
 	private List<Catalog> catalog;
 
+	@HtmlField(cssPath="#fmimg > img")
+	@Attr("src")
+	private String coverHref;
+	
 	public String getGroup() {
 		return group;
 	}
@@ -105,4 +109,13 @@ public class BookBean implements HtmlBean {
 	public void setCatalog(List<Catalog> catalog) {
 		this.catalog = catalog;
 	}
+
+	public String getCoverHref() {
+		return coverHref;
+	}
+
+	public void setCoverHref(String coverHref) {
+		this.coverHref = coverHref;
+	}
+	
 }

@@ -26,7 +26,7 @@ public class BuildBook {
 		if (a.isEmpty()) {
 			books = App.properties.getProperty("books");
 		} else {
-			books = StringUtils.join(",", a);
+			books = StringUtils.join(a, ',');
 		}
 
 		for (String bookStr : books.split(",")) {
@@ -54,20 +54,21 @@ public class BuildBook {
 			if (lastHrefFile.exists()) {
 				lastHref = FileUtils.readFileToString(lastHrefFile);
 			}
-			if (StringUtils.isNotBlank(lastHref)) {
-				int suffix = 2;
-				File lastSuffixFile = new File(bookPath, App.LAST_SUFFIX_TXT);
-				if (lastSuffixFile.exists()) {
-					try {
-						suffix = Integer.parseInt(FileUtils.readFileToString(lastSuffixFile)) + 1;
-					} catch (Exception e) {
-						// nothing to do
-					}
-				}
-				App.assembleBookPart(book, String.valueOf(suffix), lastHref);
-			} else {
-				App.assembleBook(book);
-			}
+			// if (StringUtils.isNotBlank(lastHref)) {
+			// int suffix = 2;
+			// File lastSuffixFile = new File(bookPath, App.LAST_SUFFIX_TXT);
+			// if (lastSuffixFile.exists()) {
+			// try {
+			// suffix =
+			// Integer.parseInt(FileUtils.readFileToString(lastSuffixFile)) + 1;
+			// } catch (Exception e) {
+			// // nothing to do
+			// }
+			// }
+			// App.assembleBookPart(book, String.valueOf(suffix), lastHref);
+			// } else {
+			App.assembleBook(book);
+			// }
 		} catch (IOException e) {
 			logger.error("buildBook -->", e);
 		}
